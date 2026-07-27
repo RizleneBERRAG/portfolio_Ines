@@ -8,12 +8,22 @@ body {
     overflow-x: hidden;
 }
 body.is-locked { overflow: hidden; }
-button, a { color: inherit; }
-button { font: inherit; }
+button, a {
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+button {
+    font: inherit;
+    touch-action: manipulation;
+}
 img { display: block; width: 100%; }
 a { text-decoration: none; }
 figure, h1, h2, p, dl, dd { margin: 0; }
 button { border: 0; padding: 0; background: none; cursor: pointer; }
+:where(a, button):focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
 ::selection { background: var(--ink); color: var(--paper); }
 .site-shell { position: relative; isolation: isolate; }
 .noise {
@@ -55,6 +65,13 @@ button { border: 0; padding: 0; background: none; cursor: pointer; }
 .chapter-title--light { color: var(--white); }
 @media (pointer: fine) {
     body, a, button { cursor: none; }
+}
+@media (max-width: 700px) {
+    .noise {
+        inset: 0;
+        opacity: .018;
+        animation: none;
+    }
 }
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
