@@ -1,0 +1,15 @@
+:root {
+    --ink: #080808;
+    --ink-soft: #131313;
+    --paper: #f1eee7;
+    --paper-deep: #ded8ce;
+    --white: #fff;
+    --line-dark: rgba(8, 8, 8, .18);
+    --line-light: rgba(255, 255, 255, .22);
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Archivo', Arial, sans-serif;
+    --font-mono: 'Space Mono', monospace;
+    --page-pad: clamp(20px, 3vw, 48px);
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --ease-in-out: cubic-bezier(.76, 0, .24, 1);
+}
