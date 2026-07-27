@@ -1,0 +1,83 @@
+.hero {
+    position: relative;
+    min-height: 100svh;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--white);
+}
+.hero__media,
+.hero__shade { position: absolute; inset: 0; }
+.hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 27%;
+    scale: 1.08;
+}
+.hero__shade {
+    background: linear-gradient(90deg, rgba(0,0,0,.68), transparent 52%), linear-gradient(0deg, rgba(0,0,0,.58), transparent 45%);
+}
+.hero__copy {
+    position: absolute;
+    left: var(--page-pad);
+    bottom: clamp(105px, 13vh, 156px);
+    z-index: 2;
+}
+.hero__copy .eyebrow { margin-bottom: 22px; }
+.hero__title {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-display);
+    font-size: clamp(92px, 17vw, 250px);
+    font-weight: 500;
+    line-height: .68;
+    letter-spacing: -.065em;
+}
+.hero__title span:last-child { margin-left: clamp(24px, 12vw, 210px); }
+.hero__statement {
+    width: min(320px, 70vw);
+    margin-top: 34px;
+    font-size: 13px;
+    line-height: 1.65;
+}
+.hero__enter {
+    position: absolute;
+    right: var(--page-pad);
+    bottom: 42px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(315px, 42vw);
+    padding: 13px 0;
+    border-top: 1px solid rgba(255,255,255,.6);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.hero__scroll {
+    position: absolute;
+    left: var(--page-pad);
+    bottom: 43px;
+    z-index: 3;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.hero-float {
+    position: absolute;
+    z-index: 3;
+    width: clamp(110px, 12vw, 190px);
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 30px 90px rgba(0,0,0,.45);
+}
+.hero-float img { width: 100%; height: 100%; object-fit: cover; }
+.hero-float--1 { top: 15%; right: 13%; transform: rotate(6deg); }
+.hero-float--2 { top: 38%; left: 46%; transform: rotate(-8deg); }
+.hero-float--3 { right: 28%; bottom: 12%; transform: rotate(3deg); }
