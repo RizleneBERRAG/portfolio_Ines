@@ -60,7 +60,7 @@
     width: min(560px, 100%);
     height: 100%;
     overflow-y: auto;
-    padding: 26px clamp(24px, 5vw, 64px) 48px;
+    padding: max(26px, env(safe-area-inset-top)) clamp(24px, 5vw, 64px) max(48px, env(safe-area-inset-bottom));
     background: var(--paper);
     transform: translateX(100%);
     transition: transform .65s var(--ease-out);
@@ -68,6 +68,7 @@
 .casting-drawer.is-open .casting-drawer__panel { transform: translateX(0); }
 .casting-drawer__header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--line-dark);
@@ -75,6 +76,11 @@
     font-size: 9px;
     letter-spacing: .12em;
     text-transform: uppercase;
+}
+.casting-drawer__header button,
+.lightbox__close {
+    min-width: 44px;
+    min-height: 44px;
 }
 .casting-drawer__identity { padding: 62px 0 46px; }
 .casting-drawer__identity p,
@@ -101,13 +107,15 @@
     border-bottom: 1px solid var(--line-dark);
 }
 .casting-list dt { font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; }
-.casting-list dd { font-size: 13px; }
+.casting-list dd { font-size: 13px; text-align: right; }
 .casting-drawer__note { padding: 34px 0; font-size: 12px; line-height: 1.7; color: rgba(8,8,8,.62); }
-.casting-drawer__note code { font-family: var(--font-mono); font-size: 10px; }
 .casting-drawer__actions { display: grid; gap: 10px; }
 .casting-drawer__actions a,
 .casting-drawer__actions span {
-    padding: 16px;
+    display: grid;
+    place-items: center;
+    min-height: 48px;
+    padding: 14px 16px;
     border: 1px solid var(--ink);
     text-align: center;
     font-family: var(--font-mono);
@@ -115,7 +123,7 @@
     letter-spacing: .1em;
     text-transform: uppercase;
 }
-.lightbox { display: grid; place-items: center; }
+.lightbox { display: grid; place-items: center; padding: 24px; }
 .lightbox__figure {
     position: relative;
     z-index: 1;
@@ -129,11 +137,18 @@
 .lightbox__figure figcaption { color: var(--white); font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; }
 .lightbox__close {
     position: absolute;
-    top: 24px;
-    right: 28px;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
     z-index: 2;
     color: var(--white);
     font-family: var(--font-mono);
     font-size: 9px;
     text-transform: uppercase;
+}
+@media (max-width: 600px) {
+    .casting-drawer__identity { padding: 44px 0 34px; }
+    .casting-drawer__identity h2 { font-size: clamp(60px, 20vw, 86px); }
+    .lightbox { padding: 64px 14px 20px; }
+    .lightbox__figure { max-width: 100%; max-height: 82svh; }
+    .lightbox__figure img { max-height: 74svh; }
 }
