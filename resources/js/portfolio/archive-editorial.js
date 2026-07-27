@@ -31,97 +31,110 @@ const initArchiveEditorial = () => {
     const quotes = [...section.querySelectorAll('[data-archive-quote]')];
     const filters = [...section.querySelectorAll('[data-filter]')];
 
-    if (reducedMotion) {
-        gsap.set(section.querySelectorAll('.archive-card__tear'), { xPercent: 105 });
-        return;
-    }
-
-    gsap.timeline({
-        scrollTrigger: {
-            trigger: section.querySelector('.archive-editorial__hero'),
-            start: 'top 72%',
-            once: true,
-        },
-    })
-        .from('[data-archive-strip]', {
-            xPercent: -45,
-            rotation: -8,
-            opacity: 0,
-            duration: .85,
-            ease: 'power4.out',
-        })
-        .from('[data-archive-title] > *', {
-            yPercent: 105,
-            rotation: 2,
-            opacity: 0,
-            stagger: .12,
-            duration: 1.05,
-            ease: 'power4.out',
-        }, '-=.55')
-        .from('.archive-editorial__intro > *', {
-            y: 24,
-            opacity: 0,
-            stagger: .1,
-            duration: .65,
-            ease: 'power3.out',
-        }, '-=.55');
-
     cards.forEach((card) => {
         const tear = card.querySelector('.archive-card__tear');
-        if (tear) gsap.set(tear, { xPercent: 0 });
+        if (tear) gsap.set(tear, { xPercent: reducedMotion ? 108 : 0 });
     });
 
-    ScrollTrigger.batch(cards, {
-        start: 'top 88%',
-        once: true,
-        onEnter: (batch) => {
-            batch.forEach((card, index) => {
-                const surface = card.querySelector('.archive-card__surface');
-                const tear = card.querySelector('.archive-card__tear');
-                const delay = index * .075;
+    if (!reducedMotion) {
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: section.querySelector('.archive-editorial__hero'),
+                start: 'top 72%',
+                once: true,
+            },
+        })
+            .from('[data-archive-strip]', {
+                xPercent: -45,
+                rotation: -8,
+                opacity: 0,
+                duration: .85,
+                ease: 'power4.out',
+            })
+            .from('[data-archive-title] > *', {
+                yPercent: 105,
+                rotation: 2,
+                opacity: 0,
+                stagger: .12,
+                duration: 1.05,
+                ease: 'power4.out',
+            }, '-=.55')
+            .from('.archive-editorial__intro > *', {
+                y: 24,
+                opacity: 0,
+                stagger: .1,
+                duration: .65,
+                ease: 'power3.out',
+            }, '-=.55');
 
-                gsap.fromTo(card,
-                    { y: 90, opacity: 0 },
-                    { y: 0, opacity: 1, duration: .9, delay, ease: 'power3.out' },
-                );
+        ScrollTrigger.batch(cards, {
+            start: 'top 88%',
+            once: true,
+            onEnter: (batch) => {
+                batch.forEach((card, index) => {
+                    const surface = card.querySelector('.archive-card__surface');
+                    const tear = card.querySelector('.archive-card__tear');
+                    const delay = index * .075;
 
-                if (surface) {
-                    gsap.fromTo(surface,
-                        { rotation: index % 2 === 0 ? -3 : 3, scale: .96 },
-                        { rotation: 0, scale: 1, duration: 1.05, delay, ease: 'power4.out', clearProps: 'rotation,scale' },
+                    gsap.fromTo(card,
+                        { y: 90, opacity: 0 },
+                        { y: 0, opacity: 1, duration: .9, delay, ease: 'power3.out' },
                     );
-                }
 
-                if (tear) {
-                    gsap.to(tear, {
-                        xPercent: 108,
-                        duration: 1.15,
-                        delay: delay + .12,
-                        ease: 'power4.inOut',
-                    });
-                }
-            });
-        },
-    });
+                    if (surface) {
+                        gsap.fromTo(surface,
+                            { rotation: index % 2 === 0 ? -3 : 3, scale: .96 },
+                            { rotation: 0, scale: 1, duration: 1.05, delay, ease: 'power4.out', clearProps: 'rotation,scale' },
+                        );
+                    }
 
-    ScrollTrigger.batch(quotes, {
-        start: 'top 90%',
-        once: true,
-        onEnter: (batch) => gsap.from(batch, {
-            y: 60,
-            opacity: 0,
-            rotation: -1.5,
-            stagger: .1,
-            duration: .9,
-            ease: 'power3.out',
-        }),
-    });
+                    if (tear) {
+                        gsap.to(tear, {
+                            xPercent: 108,
+                            duration: 1.15,
+                            delay: delay + .12,
+                            ease: 'power4.inOut',
+                        });
+                    }
+                });
+            },
+        });
+
+        ScrollTrigger.batch(quotes, {
+            start: 'top 90%',
+            once: true,
+            onEnter: (batch) => gsap.from(batch, {
+                y: 60,
+                opacity: 0,
+                rotation: -1.5,
+                stagger: .1,
+                duration: .9,
+                ease: 'power3.out',
+            }),
+        });
+    }
 
     filters.forEach((button) => {
         button.addEventListener('click', () => {
             const filter = button.dataset.filter;
 
+            filters.forEach((item) => {
+                const active = item === button;
+                item.classList.toggle('is-active', active);
+                item.setAttribute('aria-pressed', String(active));
+            });
+
+            cards.forEach((card) => {
+                const visible = filter === 'all' || card.dataset.category === filter;
+                card.classList.toggle('is-hidden', !visible);
+            });
+
             quotes.forEach((quote) => quote.classList.toggle('is-hidden', filter !== 'all'));
+
+            if (reducedMotion) {
+                ScrollTrigger.refresh();
+                return;
+            }
 
             requestAnimationFrame(() => {
                 const visibleCards = cards.filter((card) => !card.classList.contains('is-hidden'));
@@ -143,7 +156,7 @@ const initArchiveEditorial = () => {
         });
     });
 
-    if (finePointer) {
+    if (finePointer && !reducedMotion) {
         cards.forEach((card) => {
             const image = card.querySelector('.archive-card__frame img');
             if (!image) return;
