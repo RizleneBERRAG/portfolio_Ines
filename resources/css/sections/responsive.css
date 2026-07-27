@@ -16,8 +16,10 @@
     .power-heading { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 739px) {
+@media (pointer: coarse) and (max-width: 1024px), (max-width: 739px) {
     .soft-section { overflow: visible; }
+    .soft-intro { grid-template-columns: 1fr; }
+    .soft-intro .section-index { margin-bottom: 50px; }
     .soft-track-wrap { overflow: visible; }
     .soft-track { display: block; width: 100%; }
     .soft-panel {
