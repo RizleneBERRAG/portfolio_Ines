@@ -5,7 +5,7 @@ return [
         'first_name' => 'Ines',
         'last_name' => 'Aouadhi',
         'role' => 'Model',
-        'location' => 'Lyon · Paris',
+        'location' => 'Lyon · France',
         'statement' => 'Soft presence. Strong character.',
     ],
 
