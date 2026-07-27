@@ -7,6 +7,7 @@ const root = document.querySelector('[data-portfolio]');
 
 if (root) {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
     const lockPage = (locked) => document.body.classList.toggle('is-locked', locked);
 
     const initPreloader = () => {
@@ -80,7 +81,7 @@ if (root) {
         const floats = [...document.querySelectorAll('[data-hero-float]')];
 
         hero?.addEventListener('mousemove', (event) => {
-            if (reducedMotion) return;
+            if (reducedMotion || coarsePointer) return;
             const x = event.clientX / window.innerWidth - .5;
             const y = event.clientY / window.innerHeight - .5;
 
@@ -96,7 +97,7 @@ if (root) {
         });
 
         hero?.addEventListener('mouseleave', () => gsap.to(floats, { opacity: 0, duration: .45 }));
-        document.querySelector('[data-enter]')?.addEventListener('click', () => document.querySelector('#story')?.scrollIntoView({ behavior: 'smooth' }));
+        document.querySelector('[data-enter]')?.addEventListener('click', () => document.querySelector('#story')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' }));
     };
 
     const initTextReveal = () => {
@@ -130,6 +131,15 @@ if (root) {
             incoming.style.visibility = 'visible';
             incoming.classList.add('is-active');
 
+            if (reducedMotion) {
+                outgoing.classList.remove('is-active');
+                outgoing.style.visibility = 'hidden';
+                incoming.style.visibility = 'visible';
+                current.textContent = String(index + 1).padStart(2, '0');
+                animating = false;
+                return;
+            }
+
             gsap.timeline({
                 onComplete: () => {
                     outgoing.classList.remove('is-active');
@@ -149,7 +159,7 @@ if (root) {
     const initHorizontalGallery = () => {
         const wrap = document.querySelector('[data-horizontal-wrap]');
         const track = document.querySelector('[data-horizontal-track]');
-        if (!wrap || !track || reducedMotion || window.innerWidth < 740) return;
+        if (!wrap || !track || reducedMotion || coarsePointer || window.innerWidth < 740) return;
 
         const getDistance = () => Math.max(track.scrollWidth - window.innerWidth, 0);
         const tween = gsap.to(track, {
@@ -222,10 +232,19 @@ if (root) {
         const closers = [...document.querySelectorAll('[data-casting-close]')];
         if (!drawer) return;
 
+        let previousFocus = null;
+
         const setOpen = (open) => {
+            if (open) previousFocus = document.activeElement;
             drawer.classList.toggle('is-open', open);
             drawer.setAttribute('aria-hidden', String(!open));
             lockPage(open);
+
+            if (open) {
+                requestAnimationFrame(() => drawer.querySelector('.casting-drawer__header button')?.focus());
+            } else if (previousFocus instanceof HTMLElement) {
+                previousFocus.focus();
+            }
         };
 
         openers.forEach((button) => button.addEventListener('click', () => setOpen(true)));
@@ -243,8 +262,11 @@ if (root) {
         const closers = [...document.querySelectorAll('[data-lightbox-close]')];
         if (!lightbox || !image) return;
 
+        let previousFocus = null;
+
         const setOpen = (open, trigger = null) => {
             if (open && trigger) {
+                previousFocus = trigger;
                 image.src = trigger.dataset.imageSrc;
                 image.alt = trigger.dataset.imageAlt || 'Ines Aouadhi portfolio image';
                 if (caption) caption.textContent = trigger.dataset.imageAlt || '';
@@ -252,6 +274,13 @@ if (root) {
             lightbox.classList.toggle('is-open', open);
             lightbox.setAttribute('aria-hidden', String(!open));
             lockPage(open);
+
+            if (open) {
+                requestAnimationFrame(() => lightbox.querySelector('.lightbox__close')?.focus());
+            } else {
+                image.removeAttribute('src');
+                if (previousFocus instanceof HTMLElement) previousFocus.focus();
+            }
         };
 
         triggers.forEach((trigger) => trigger.addEventListener('click', () => setOpen(true, trigger)));
@@ -262,7 +291,7 @@ if (root) {
     };
 
     const initCursor = () => {
-        if (window.matchMedia('(pointer: coarse)').matches) return;
+        if (coarsePointer) return;
         const cursor = document.querySelector('[data-cursor]');
         const label = document.querySelector('[data-cursor-label]');
         if (!cursor) return;
