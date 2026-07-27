@@ -118,20 +118,85 @@
             </div>
         </section>
 
-        <section class="archive-section" id="archive" data-archive>
-            <div class="archive-heading section-pad">
+        @php
+            $archiveLayouts = [
+                'archive-card--hero archive-card--tape',
+                'archive-card--portrait archive-card--tear-top',
+                'archive-card--portrait archive-card--stamp',
+                'archive-card--wide archive-card--tear-bottom',
+                'archive-card--square archive-card--tape',
+                'archive-card--portrait archive-card--cut-left',
+                'archive-card--wide archive-card--stamp',
+                'archive-card--square archive-card--tear-top',
+            ];
+        @endphp
+
+        <section class="archive-section archive-editorial" id="archive" data-archive>
+            <div class="archive-editorial__grain" aria-hidden="true"></div>
+
+            <div class="archive-editorial__hero section-pad">
                 <div class="section-index section-index--light">06</div>
-                <div><p class="eyebrow">Contact sheet</p><h2>Archive / {{ str_pad((string) $photos->count(), 2, '0', STR_PAD_LEFT) }}</h2></div>
-                <p>Every frame, rearranged as a living contact sheet. Select a category or open any image.</p>
+
+                <div class="archive-editorial__heading">
+                    <p class="eyebrow">Contact sheet · Volume one</p>
+                    <div class="archive-editorial__title-lockup">
+                        <span class="archive-editorial__strip" data-archive-strip>Selected frames</span>
+                        <h2 data-archive-title><span>The Cut</span><em>/ {{ str_pad((string) $photos->count(), 2, '0', STR_PAD_LEFT) }}</em></h2>
+                    </div>
+                </div>
+
+                <div class="archive-editorial__intro">
+                    <span>Editorial archive</span>
+                    <p>Softness, power and after-hours moments rearranged as a living magazine contact sheet.</p>
+                </div>
             </div>
+
             <div class="archive-filters" role="group" aria-label="Filter portfolio images">
-                <button class="is-active" type="button" data-filter="all">All</button><button type="button" data-filter="soft">Soft</button><button type="button" data-filter="power">Power</button><button type="button" data-filter="lifestyle">Lifestyle</button><button type="button" data-filter="archive">Archive</button>
+                <span class="archive-filters__label">Index by mood</span>
+                <div class="archive-filters__buttons">
+                    <button class="is-active" type="button" data-filter="all">All</button>
+                    <button type="button" data-filter="soft">Soft</button>
+                    <button type="button" data-filter="power">Power</button>
+                    <button type="button" data-filter="lifestyle">Lifestyle</button>
+                    <button type="button" data-filter="archive">Archive</button>
+                </div>
             </div>
-            <div class="archive-grid" data-archive-grid>
+
+            <div class="archive-editorial__grid" data-archive-grid>
                 @foreach($photos as $photo)
-                    <button class="archive-item" type="button" data-archive-item data-category="{{ $photo['chapter'] }}" data-lightbox-trigger data-image-src="{{ asset($photo['path']) }}" data-image-alt="{{ $photo['alt'] }}">
-                        <span class="archive-item__index">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                        <img src="{{ asset($photo['path']) }}" alt="{{ $photo['alt'] }}" loading="lazy"><span class="archive-item__chapter">{{ $photo['chapter'] }}</span>
+                    @if(in_array($loop->iteration, [8, 21, 39, 55], true))
+                        <article class="archive-quote" data-archive-quote>
+                            <span>{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }} · Editor note</span>
+                            <p>{{ $loop->iteration % 2 === 0 ? 'Not one mood. Not one story.' : 'A face made for more than one frame.' }}</p>
+                            <i aria-hidden="true">IA</i>
+                        </article>
+                    @endif
+
+                    <button
+                        class="archive-card {{ $archiveLayouts[($loop->iteration - 1) % count($archiveLayouts)] }}"
+                        type="button"
+                        data-archive-item
+                        data-category="{{ $photo['chapter'] }}"
+                        data-lightbox-trigger
+                        data-image-src="{{ asset($photo['path']) }}"
+                        data-image-alt="{{ $photo['alt'] }}"
+                    >
+                        <span class="archive-card__surface">
+                            <span class="archive-card__tape" aria-hidden="true"></span>
+                            <span class="archive-card__index">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+
+                            <figure class="archive-card__frame">
+                                <img src="{{ asset($photo['path']) }}" alt="{{ $photo['alt'] }}" loading="lazy">
+                                <span class="archive-card__print" aria-hidden="true"></span>
+                                <span class="archive-card__tear" aria-hidden="true"></span>
+                            </figure>
+
+                            <span class="archive-card__meta">
+                                <span>{{ strtoupper($photo['chapter']) }}</span>
+                                <span>Frame {{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            </span>
+                            <span class="archive-card__selected">Selected</span>
+                        </span>
                     </button>
                 @endforeach
             </div>
