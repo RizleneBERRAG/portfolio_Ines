@@ -26,6 +26,7 @@ const initArchiveEditorial = () => {
     if (!section) return;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const smallScreen = window.matchMedia('(max-width: 739px)').matches;
     const finePointer = window.matchMedia('(pointer: fine)').matches;
     const cards = [...section.querySelectorAll('[data-archive-item]')];
     const quotes = [...section.querySelectorAll('[data-archive-quote]')];
@@ -33,7 +34,7 @@ const initArchiveEditorial = () => {
 
     cards.forEach((card) => {
         const tear = card.querySelector('.archive-card__tear');
-        if (tear) gsap.set(tear, { xPercent: reducedMotion ? 108 : 0 });
+        if (tear) gsap.set(tear, { xPercent: reducedMotion || smallScreen ? 108 : 0 });
     });
 
     if (!reducedMotion) {
@@ -67,48 +68,66 @@ const initArchiveEditorial = () => {
                 ease: 'power3.out',
             }, '-=.55');
 
-        ScrollTrigger.batch(cards, {
-            start: 'top 88%',
-            once: true,
-            onEnter: (batch) => {
-                batch.forEach((card, index) => {
-                    const surface = card.querySelector('.archive-card__surface');
-                    const tear = card.querySelector('.archive-card__tear');
-                    const delay = index * .075;
+        if (smallScreen) {
+            ScrollTrigger.batch(cards, {
+                start: 'top 94%',
+                once: true,
+                onEnter: (batch) => gsap.fromTo(batch,
+                    { y: 30, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: .48,
+                        stagger: .035,
+                        ease: 'power2.out',
+                        clearProps: 'transform,opacity',
+                    },
+                ),
+            });
+        } else {
+            ScrollTrigger.batch(cards, {
+                start: 'top 88%',
+                once: true,
+                onEnter: (batch) => {
+                    batch.forEach((card, index) => {
+                        const surface = card.querySelector('.archive-card__surface');
+                        const tear = card.querySelector('.archive-card__tear');
+                        const delay = index * .075;
 
-                    gsap.fromTo(card,
-                        { y: 90, opacity: 0 },
-                        { y: 0, opacity: 1, duration: .9, delay, ease: 'power3.out' },
-                    );
-
-                    if (surface) {
-                        gsap.fromTo(surface,
-                            { rotation: index % 2 === 0 ? -3 : 3, scale: .96 },
-                            { rotation: 0, scale: 1, duration: 1.05, delay, ease: 'power4.out', clearProps: 'rotation,scale' },
+                        gsap.fromTo(card,
+                            { y: 90, opacity: 0 },
+                            { y: 0, opacity: 1, duration: .9, delay, ease: 'power3.out' },
                         );
-                    }
 
-                    if (tear) {
-                        gsap.to(tear, {
-                            xPercent: 108,
-                            duration: 1.15,
-                            delay: delay + .12,
-                            ease: 'power4.inOut',
-                        });
-                    }
-                });
-            },
-        });
+                        if (surface) {
+                            gsap.fromTo(surface,
+                                { rotation: index % 2 === 0 ? -3 : 3, scale: .96 },
+                                { rotation: 0, scale: 1, duration: 1.05, delay, ease: 'power4.out', clearProps: 'rotation,scale' },
+                            );
+                        }
+
+                        if (tear) {
+                            gsap.to(tear, {
+                                xPercent: 108,
+                                duration: 1.15,
+                                delay: delay + .12,
+                                ease: 'power4.inOut',
+                            });
+                        }
+                    });
+                },
+            });
+        }
 
         ScrollTrigger.batch(quotes, {
-            start: 'top 90%',
+            start: 'top 92%',
             once: true,
             onEnter: (batch) => gsap.from(batch, {
-                y: 60,
+                y: smallScreen ? 28 : 60,
                 opacity: 0,
-                rotation: -1.5,
+                rotation: smallScreen ? 0 : -1.5,
                 stagger: .1,
-                duration: .9,
+                duration: smallScreen ? .5 : .9,
                 ease: 'power3.out',
             }),
         });
@@ -131,7 +150,7 @@ const initArchiveEditorial = () => {
 
             quotes.forEach((quote) => quote.classList.toggle('is-hidden', filter !== 'all'));
 
-            if (reducedMotion) {
+            if (reducedMotion || smallScreen) {
                 ScrollTrigger.refresh();
                 return;
             }
