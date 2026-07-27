@@ -73,8 +73,8 @@
 .soft-track-wrap { overflow: hidden; }
 .soft-track { display: flex; width: max-content; }
 .soft-panel { position: relative; width: min(72vw, 920px); height: 92vh; padding: 0 12px 44px; }
-.soft-panel__image { height: calc(100% - 36px); overflow: hidden; }
-.soft-panel__image img { width: 100%; height: 115%; object-fit: cover; object-position: center top; }
+.soft-panel__image { height: calc(100% - 36px); overflow: hidden; background: var(--paper); }
+.soft-panel__image img { width: 100%; height: 100%; object-fit: contain; object-position: center center; }
 .soft-panel__caption {
     display: flex;
     justify-content: space-between;
