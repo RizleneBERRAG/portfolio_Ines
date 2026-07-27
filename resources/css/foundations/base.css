@@ -1,0 +1,67 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--ink); }
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+body.is-locked { overflow: hidden; }
+button, a { color: inherit; }
+button { font: inherit; }
+img { display: block; width: 100%; }
+a { text-decoration: none; }
+figure, h1, h2, p, dl, dd { margin: 0; }
+button { border: 0; padding: 0; background: none; cursor: pointer; }
+::selection { background: var(--ink); color: var(--paper); }
+.site-shell { position: relative; isolation: isolate; }
+.noise {
+    position: fixed;
+    inset: -50%;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: .035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+    animation: grain .22s steps(2) infinite;
+}
+@keyframes grain {
+    0% { transform: translate3d(0, 0, 0); }
+    25% { transform: translate3d(2%, -1%, 0); }
+    50% { transform: translate3d(-1%, 2%, 0); }
+    75% { transform: translate3d(1%, 1%, 0); }
+    100% { transform: translate3d(-2%, -1%, 0); }
+}
+.section-pad { padding-inline: var(--page-pad); }
+.section-index {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+}
+.section-index--light { color: rgba(255,255,255,.58); }
+.eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+}
+.chapter-title {
+    font-family: var(--font-display);
+    font-size: clamp(110px, 23vw, 360px);
+    font-weight: 500;
+    line-height: .7;
+    letter-spacing: -.07em;
+}
+.chapter-title--light { color: var(--white); }
+@media (pointer: fine) {
+    body, a, button { cursor: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+    }
+}
